@@ -1,8 +1,7 @@
 from fastapi import FastAPI , Depends , HTTPException, status
 from psycopg import Connection
 from schema.Expense import ExpenseCreate,ExpenseResponse ,ExpenseUpdate
-
-
+from schema.Income import IncomeCreate,IncomeResponse,IncomeUpdate
 from database import get_db
 
 app = FastAPI()
@@ -290,11 +289,6 @@ def delete_expense(
 
 
 
-
-from schema.Income import IncomeCreate,IncomeResponse,IncomeUpdate
-
-
-app = FastAPI()
 
 # -------------------------
 # Health Check
