@@ -1,821 +1,1392 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Finance</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Dashboard</title>
 
-  <style>
+<style>
     * {
-      box-sizing: border-box;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #172033;
+        --muted: #6b7280;
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --green: #16a34a;
+        --red: #dc2626;
+        --orange: #ea580c;
+        --border: #e5e7eb;
+        --shadow: 0 10px 30px rgba(15, 23, 42, .07);
+        --radius: 16px;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f7f5;
-      color: #18181b;
+        font-family: Inter, Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
     }
 
-    header {
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
-      padding: 18px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    header span {
-      color: #16a34a;
-    }
-
-    .status {
-      font-size: 13px;
-      color: #71717a;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 35px auto;
-      padding: 0 20px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid #e4e4e7;
-      border-radius: 10px;
-      padding: 22px;
-    }
-
-    .card p {
-      margin: 0 0 8px;
-      color: #71717a;
-      font-size: 13px;
-    }
-
-    .card h2 {
-      margin: 0;
-      font-size: 25px;
-    }
-
-    .income {
-      color: #16a34a;
-    }
-
-    .expense {
-      color: #dc2626;
-    }
-
-    .toolbar {
-      background: white;
-      border: 1px solid #e4e4e7;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      border-radius: 10px 10px 0 0;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 5px;
-    }
-
-    .tabs button {
-      border: none;
-      background: transparent;
-      padding: 9px 14px;
-      border-radius: 7px;
-      cursor: pointer;
-    }
-
-    .tabs button.active {
-      background: #18181b;
-      color: white;
+    button,
+    input,
+    select,
+    textarea {
+        font: inherit;
     }
 
     button {
-      cursor: pointer;
+        cursor: pointer;
     }
 
-    .add-btn {
-      background: #18181b;
-      color: white;
-      border: none;
-      border-radius: 7px;
-      padding: 10px 15px;
+    .app {
+        display: flex;
+        min-height: 100vh;
     }
 
-    .table-container {
-      background: white;
-      border: 1px solid #e4e4e7;
-      border-top: none;
-      border-radius: 0 0 10px 10px;
-      overflow-x: auto;
+    /* SIDEBAR */
+    .sidebar {
+        width: 250px;
+        background: #111827;
+        color: white;
+        padding: 25px 16px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 21px;
+        font-weight: 800;
+        padding: 8px 12px 30px;
+    }
+
+    .brand-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+    }
+
+    .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .nav button {
+        border: 0;
+        color: #9ca3af;
+        background: transparent;
+        padding: 13px 15px;
+        border-radius: 11px;
+        text-align: left;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+        color: white;
+        background: #1f2937;
+    }
+
+    .nav button.active {
+        background: #4f46e5;
+    }
+
+    .sidebar-footer {
+        position: absolute;
+        bottom: 25px;
+        left: 20px;
+        right: 20px;
+        color: #6b7280;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    /* MAIN */
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        padding: 30px;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+        gap: 15px;
+    }
+
+    .topbar h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .topbar p {
+        color: var(--muted);
+    }
+
+    .api-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        border: 1px solid var(--border);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        box-shadow: var(--shadow);
+    }
+
+    .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #9ca3af;
+    }
+
+    .status-dot.online {
+        background: var(--green);
+        box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+    }
+
+    .status-dot.offline {
+        background: var(--red);
+    }
+
+    /* CARDS */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: var(--card);
+        padding: 22px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+    }
+
+    .stat-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 11px;
+        font-size: 18px;
+    }
+
+    .income-icon {
+        background: #dcfce7;
+        color: var(--green);
+    }
+
+    .expense-icon {
+        background: #fee2e2;
+        color: var(--red);
+    }
+
+    .balance-icon {
+        background: #e0e7ff;
+        color: var(--primary);
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        margin-top: 14px;
+    }
+
+    .positive {
+        color: var(--green);
+    }
+
+    .negative {
+        color: var(--red);
+    }
+
+    /* CONTENT */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .panel {
+        background: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .panel-header {
+        padding: 20px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+        gap: 15px;
+    }
+
+    .panel-header h2 {
+        font-size: 18px;
+    }
+
+    .panel-header p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        border: 0;
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .btn-primary {
+        color: white;
+        background: var(--primary);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+    }
+
+    .btn-light {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-danger {
+        background: #fee2e2;
+        color: var(--red);
+    }
+
+    .btn-success {
+        background: #dcfce7;
+        color: var(--green);
+    }
+
+    .btn-small {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    /* TABLE */
+    .table-wrap {
+        overflow-x: auto;
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+    }
+
+    th,
+    td {
+        padding: 14px 20px;
+        text-align: left;
+        border-bottom: 1px solid #f0f1f3;
+        font-size: 14px;
     }
 
     th {
-      background: #fafafa;
-      color: #71717a;
-      font-size: 12px;
-      text-align: left;
-      padding: 13px 18px;
+        color: var(--muted);
+        background: #fafafa;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
     }
 
-    td {
-      padding: 15px 18px;
-      border-top: 1px solid #f0f0f0;
-      font-size: 14px;
+    tr:last-child td {
+        border-bottom: 0;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      background: #f4f4f5;
-      font-size: 12px;
-      color: #52525b;
+    .title-cell {
+        font-weight: 700;
     }
 
-    .actions button {
-      padding: 6px 9px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-      background: white;
-      margin-right: 4px;
+    .description {
+        color: var(--muted);
+        max-width: 240px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    .actions .delete {
-      color: #dc2626;
+    .category {
+        display: inline-flex;
+        padding: 5px 9px;
+        background: #f3f4f6;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #4b5563;
+        text-transform: capitalize;
+    }
+
+    .amount-income {
+        color: var(--green);
+        font-weight: 800;
+    }
+
+    .amount-expense {
+        color: var(--red);
+        font-weight: 800;
+    }
+
+    .actions {
+        display: flex;
+        gap: 6px;
     }
 
     .empty {
-      padding: 40px;
-      text-align: center;
-      color: #71717a;
+        padding: 45px 20px;
+        text-align: center;
+        color: var(--muted);
     }
 
-    /* Modal */
-
-    .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.4);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+    /* MODAL */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        padding: 20px;
     }
 
-    .modal-bg.show {
-      display: flex;
+    .modal-overlay.show {
+        display: flex;
     }
 
     .modal {
-      background: white;
-      width: 100%;
-      max-width: 450px;
-      padding: 25px;
-      border-radius: 12px;
+        width: 100%;
+        max-width: 520px;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 25px 70px rgba(0,0,0,.25);
+        overflow: hidden;
+        animation: modalIn .2s ease;
     }
 
-    .modal h2 {
-      margin-top: 0;
+    @keyframes modalIn {
+        from {
+            transform: translateY(10px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
-    .field {
-      margin-bottom: 15px;
+    .modal-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
-    .field label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 6px;
-      font-weight: bold;
+    .modal-header h2 {
+        font-size: 19px;
     }
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #d4d4d8;
-      border-radius: 6px;
-      font-size: 14px;
+    .close {
+        border: 0;
+        background: #f3f4f6;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        font-size: 20px;
+        color: #4b5563;
     }
 
-    .field textarea {
-      min-height: 80px;
-      resize: vertical;
+    form {
+        padding: 22px;
     }
 
-    .modal-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
     }
 
-    .cancel {
-      background: white;
-      border: 1px solid #ddd;
-      padding: 10px 15px;
-      border-radius: 6px;
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
     }
 
-    .save {
-      background: #18181b;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
+    .form-group.full {
+        grid-column: 1 / -1;
     }
 
-    .error {
-      background: #fef2f2;
-      color: #b91c1c;
-      padding: 12px;
-      border-radius: 7px;
-      margin-bottom: 20px;
-      display: none;
+    label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        padding: 11px 12px;
+        outline: none;
+        background: white;
+        color: var(--text);
+        transition: .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 85px;
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 9px;
+        margin-top: 20px;
+    }
+
+    /* TOAST */
+    .toast {
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        background: #111827;
+        color: white;
+        padding: 13px 18px;
+        border-radius: 11px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.2);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: .25s;
+        z-index: 200;
+        max-width: 350px;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .toast.error {
+        background: #b91c1c;
+    }
+
+    .toast.success {
+        background: #15803d;
+    }
+
+    /* MOBILE */
+    .mobile-header {
+        display: none;
+    }
+
+    @media (max-width: 900px) {
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+            padding: 22px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
     }
 
     @media (max-width: 700px) {
-      .cards {
-        grid-template-columns: 1fr;
-      }
+        .sidebar {
+            display: none;
+        }
 
-      header {
-        padding: 15px;
-      }
+        .main {
+            margin-left: 0;
+            width: 100%;
+            padding: 16px;
+        }
 
-      .container {
-        margin-top: 20px;
-      }
+        .mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-      .toolbar {
-        align-items: stretch;
-        flex-direction: column;
-      }
+        .mobile-brand {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .topbar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .topbar h1 {
+            font-size: 24px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .panel-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
     }
-  </style>
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>My<span>Finance</span></h1>
-  <div class="status" id="connectionStatus">
-    Connecting...
-  </div>
-</header>
+<div class="app">
 
-<div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">₹</div>
+            <span>Finance App</span>
+        </div>
 
-  <div id="errorBox" class="error"></div>
+        <nav class="nav">
+            <button class="active" onclick="showSection('dashboard', this)">
+                📊 Dashboard
+            </button>
 
-  <div class="cards">
+            <button onclick="showSection('expenses', this)">
+                💸 Expenses
+            </button>
 
-    <div class="card">
-      <p>Balance</p>
-      <h2 id="balance">Rs 0.00</h2>
-    </div>
+            <button onclick="showSection('income', this)">
+                💰 Income
+            </button>
+        </nav>
 
-    <div class="card">
-      <p>Total Income</p>
-      <h2 class="income" id="totalIncome">Rs 0.00</h2>
-    </div>
+        <div class="sidebar-footer">
+            FastAPI Finance Manager<br>
+            API: 127.0.0.1:8000
+        </div>
+    </aside>
 
-    <div class="card">
-      <p>Total Expenses</p>
-      <h2 class="expense" id="totalExpenses">Rs 0.00</h2>
-    </div>
+    <!-- MAIN -->
+    <main class="main">
 
-  </div>
+        <div class="mobile-header">
+            <div class="mobile-brand">💰 Finance App</div>
+        </div>
 
-  <div class="toolbar">
+        <div class="topbar">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Manage your income and expenses</p>
+            </div>
 
-    <div class="tabs">
-      <button id="expensesTab"
-              class="active"
-              onclick="showTransactions('expenses')">
-        Expenses
-      </button>
+            <div class="api-status">
+                <span id="statusDot" class="status-dot"></span>
+                <span id="statusText">Checking API...</span>
+            </div>
+        </div>
 
-      <button id="incomeTab"
-              onclick="showTransactions('income')">
-        Income
-      </button>
-    </div>
+        <!-- DASHBOARD -->
+        <section id="dashboardSection">
 
-    <button class="add-btn" onclick="openAddModal()">
-      + Add
-    </button>
+            <div class="stats">
 
-  </div>
+                <div class="stat-card">
+                    <div class="stat-head">
+                        <span>Total Income</span>
+                        <div class="stat-icon income-icon">↗</div>
+                    </div>
+                    <div id="totalIncome" class="stat-value positive">
+                        ₹0.00
+                    </div>
+                </div>
 
-  <div class="table-container">
+                <div class="stat-card">
+                    <div class="stat-head">
+                        <span>Total Expenses</span>
+                        <div class="stat-icon expense-icon">↘</div>
+                    </div>
+                    <div id="totalExpense" class="stat-value negative">
+                        ₹0.00
+                    </div>
+                </div>
 
-    <table>
+                <div class="stat-card">
+                    <div class="stat-head">
+                        <span>Balance</span>
+                        <div class="stat-icon balance-icon">=</div>
+                    </div>
+                    <div id="balance" class="stat-value">
+                        ₹0.00
+                    </div>
+                </div>
 
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Category</th>
-          <th>Date</th>
-          <th>Amount</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+            </div>
 
-      <tbody id="tableBody">
-      </tbody>
+            <div class="content-grid">
 
-    </table>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h2>Recent Transactions</h2>
+                            <p>Your latest income and expenses</p>
+                        </div>
 
-  </div>
+                        <button class="btn btn-primary" onclick="openAddModal('expense')">
+                            + Add Expense
+                        </button>
+                    </div>
 
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- EXPENSES -->
+        <section id="expensesSection" style="display:none;">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Expenses</h2>
+                        <p>Manage all your expenses</p>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="openAddModal('expense')">
+                        + Add Expense
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="expenseTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- INCOME -->
+        <section id="incomeSection" style="display:none;">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Income</h2>
+                        <p>Manage all your income</p>
+                    </div>
+
+                    <button class="btn btn-success" onclick="openAddModal('income')">
+                        + Add Income
+                    </button>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="incomeTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
 </div>
+
 
 <!-- MODAL -->
+<div id="modalOverlay" class="modal-overlay">
 
-<div id="modal" class="modal-bg">
+    <div class="modal">
 
-  <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add Expense</h2>
+            <button class="close" onclick="closeModal()">×</button>
+        </div>
 
-    <h2 id="modalTitle">Add Expense</h2>
+        <form id="transactionForm">
 
-    <form id="transactionForm">
+            <input type="hidden" id="editId">
+            <input type="hidden" id="transactionType">
 
-      <input type="hidden" id="editId">
+            <div class="form-grid">
 
-      <div class="field">
-        <label>Title</label>
-        <input
-          id="title"
-          type="text"
-          placeholder="e.g. Groceries"
-          required
-        >
-      </div>
+                <div class="form-group full">
+                    <label for="title">Title</label>
+                    <input
+                        id="title"
+                        type="text"
+                        placeholder="e.g. Monthly salary"
+                        required
+                    >
+                </div>
 
-      <div class="field">
-        <label>Amount</label>
-        <input
-          id="amount"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="0.00"
-          required
-        >
-      </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input
+                        id="amount"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        required
+                    >
+                </div>
 
-      <div class="field">
-        <label>Category</label>
+                <div class="form-group">
+                    <label for="category">Category</label>
 
-        <select id="category" required>
-        </select>
+                    <select id="category" required></select>
+                </div>
 
-      </div>
+                <div class="form-group full">
+                    <label for="date">Date</label>
+                    <input
+                        id="date"
+                        type="date"
+                        required
+                    >
+                </div>
 
-      <div class="field">
-        <label>Date</label>
+                <div class="form-group full">
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        placeholder="Optional description..."
+                    ></textarea>
+                </div>
 
-        <input
-          id="date"
-          type="date"
-          required
-        >
+            </div>
 
-      </div>
+            <div class="form-footer">
+                <button
+                    type="button"
+                    class="btn btn-light"
+                    onclick="closeModal()"
+                >
+                    Cancel
+                </button>
 
-      <div class="field">
-        <label>Description</label>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="submitBtn"
+                >
+                    Save
+                </button>
+            </div>
 
-        <textarea
-          id="description"
-          placeholder="Optional"
-        ></textarea>
-
-      </div>
-
-      <div class="modal-buttons">
-
-        <button
-          type="button"
-          class="cancel"
-          onclick="closeModal()">
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          class="save">
-          Save
-        </button>
-
-      </div>
-
-    </form>
-
-  </div>
-
+        </form>
+    </div>
 </div>
+
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
 
 <script>
+/* ============================================================
+   CONFIGURATION
+============================================================ */
 
-  /*
-   ==================================================
-   FASTAPI CONFIGURATION
-   ==================================================
-  */
-
-  const API_URL = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL;
 
 
+/* ============================================================
+   STATE
+============================================================ */
 
-  /*
-   ==================================================
-   APPLICATION STATE
-   ==================================================
-  */
+let expenses = [];
+let incomes = [];
 
-  let expenses = [];
-  let incomes = [];
-
-  let currentType = "expenses";
+let editingId = null;
+let editingType = null;
 
 
-  /*
-   ==================================================
-   API REQUEST FUNCTION
-   ==================================================
-  */
+/* ============================================================
+   API
+============================================================ */
 
-  async function request(endpoint, options = {}) {
+async function apiRequest(endpoint, options = {}) {
 
-    console.log("API REQUEST:", API_URL + endpoint);
-
-    const response = await fetch(API_URL + endpoint, {
-      ...options,
-
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        ...(options.headers || {})
-      }
+    const response = await fetch(API_BASE + endpoint, {
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        },
+        ...options
     });
 
-    console.log(
-      "API RESPONSE:",
-      response.status,
-      response.statusText
-    );
+    let data = null;
+
+    if (response.status !== 204) {
+        const text = await response.text();
+
+        try {
+            data = text ? JSON.parse(text) : null;
+        } catch {
+            data = text;
+        }
+    }
 
     if (!response.ok) {
 
-      let message = `API Error ${response.status}`;
+        let message = "Request failed";
 
-      try {
-
-        const data = await response.json();
-
-        if (data.detail) {
-
-          if (Array.isArray(data.detail)) {
-            message = data.detail
-              .map(error => error.msg)
-              .join(", ");
-          } else {
-            message = data.detail;
-          }
-
+        if (data?.detail) {
+            if (Array.isArray(data.detail)) {
+                message = data.detail
+                    .map(item => item.msg)
+                    .join(", ");
+            } else {
+                message = data.detail;
+            }
         }
 
-      } catch (_) {}
-
-      throw new Error(message);
+        throw new Error(message);
     }
 
-    if (response.status === 204) {
-      return null;
-    }
-
-    return response.json();
-  }
+    return data;
+}
 
 
-  /*
-   ==================================================
-   CHECK API CONNECTION
-   ==================================================
-  */
+/* ============================================================
+   INITIAL LOAD
+============================================================ */
 
-  async function checkConnection() {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    const status =
-      document.getElementById("connectionStatus");
+    document.getElementById("date").value =
+        new Date().toISOString().split("T")[0];
+
+    await checkAPI();
+    await loadAll();
+
+});
+
+
+async function loadAll() {
 
     try {
 
-      await request("/");
+        const [expenseData, incomeData] = await Promise.all([
+            apiRequest("/expenses"),
+            apiRequest("/income")
+        ]);
 
-      status.textContent = "● API Connected";
-      status.style.color = "#16a34a";
+        expenses = Array.isArray(expenseData) ? expenseData : [];
+        incomes = Array.isArray(incomeData) ? incomeData : [];
+
+        renderExpenses();
+        renderIncome();
+        updateDashboard();
 
     } catch (error) {
 
-      status.textContent = "● API Offline";
-      status.style.color = "#dc2626";
+        showToast(error.message, "error");
 
-      showError(
-        "Cannot connect to FastAPI. Make sure your server is running at " +
-        API_URL
-      );
-
-      console.error(error);
     }
-  }
+}
 
 
-  /*
-   ==================================================
-   LOAD EVERYTHING
-   ==================================================
-  */
+/* ============================================================
+   API HEALTH
+============================================================ */
 
-  async function loadData() {
+async function checkAPI() {
 
-    hideError();
+    const dot = document.getElementById("statusDot");
+    const text = document.getElementById("statusText");
 
     try {
 
-      const results = await Promise.all([
-        request("/expenses"),
-        request("/income")
-      ]);
+        await apiRequest("/health/db");
 
-      expenses = results[0] || [];
-      incomes = results[1] || [];
+        dot.className = "status-dot online";
+        text.textContent = "API Connected";
 
-      updateDashboard();
-      renderTable();
+    } catch {
 
-      document.getElementById("connectionStatus").textContent =
-        "● API Connected";
-
-      document.getElementById("connectionStatus").style.color =
-        "#16a34a";
-
-    } catch (error) {
-
-      console.error(error);
-
-      showError(
-        "Failed to load data from FastAPI: " +
-        error.message
-      );
-
+        dot.className = "status-dot offline";
+        text.textContent = "API Offline";
     }
-  }
+}
 
 
-  /*
-   ==================================================
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+function showSection(section, button) {
+
+    document.getElementById("dashboardSection").style.display =
+        section === "dashboard" ? "block" : "none";
+
+    document.getElementById("expensesSection").style.display =
+        section === "expenses" ? "block" : "none";
+
+    document.getElementById("incomeSection").style.display =
+        section === "income" ? "block" : "none";
+
+    document.querySelectorAll(".nav button")
+        .forEach(btn => btn.classList.remove("active"));
+
+    button.classList.add("active");
+
+    const titles = {
+        dashboard: ["Dashboard", "Manage your income and expenses"],
+        expenses: ["Expenses", "Manage all your expenses"],
+        income: ["Income", "Manage all your income"]
+    };
+
+    document.getElementById("pageTitle").textContent =
+        titles[section][0];
+
+    document.getElementById("pageSubtitle").textContent =
+        titles[section][1];
+}
+
+
+/* ============================================================
    DASHBOARD
-   ==================================================
-  */
+============================================================ */
 
-  function updateDashboard() {
+function updateDashboard() {
 
-    const totalIncome = incomes.reduce(
-      (total, item) =>
-        total + parseFloat(item.amount || 0),
-      0
+    const incomeTotal = incomes.reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
     );
 
-    const totalExpenses = expenses.reduce(
-      (total, item) =>
-        total + parseFloat(item.amount || 0),
-      0
+    const expenseTotal = expenses.reduce(
+        (sum, item) => sum + Number(item.amount || 0),
+        0
     );
 
-    const balance =
-      totalIncome - totalExpenses;
+    const balance = incomeTotal - expenseTotal;
 
-    document.getElementById("totalIncome")
-      .textContent = money(totalIncome);
+    document.getElementById("totalIncome").textContent =
+        formatMoney(incomeTotal);
 
-    document.getElementById("totalExpenses")
-      .textContent = money(totalExpenses);
+    document.getElementById("totalExpense").textContent =
+        formatMoney(expenseTotal);
 
-    document.getElementById("balance")
-      .textContent = money(balance);
-  }
+    const balanceElement = document.getElementById("balance");
+
+    balanceElement.textContent = formatMoney(balance);
+
+    balanceElement.classList.remove("positive", "negative");
+
+    balanceElement.classList.add(
+        balance >= 0 ? "positive" : "negative"
+    );
+
+    renderRecent();
+}
 
 
-  /*
-   ==================================================
-   RENDER TABLE
-   ==================================================
-  */
+function renderRecent() {
 
-  function renderTable() {
+    const tbody = document.getElementById("recentTable");
 
-    const tbody =
-      document.getElementById("tableBody");
+    const transactions = [
+        ...expenses.map(item => ({
+            ...item,
+            type: "expense"
+        })),
 
-    const data =
-      currentType === "expenses"
-        ? expenses
-        : incomes;
+        ...incomes.map(item => ({
+            ...item,
+            type: "income"
+        }))
+    ];
 
-    if (!data.length) {
+    transactions.sort(
+        (a, b) =>
+            new Date(b.created_at || b.expense_date || b.income_date) -
+            new Date(a.created_at || a.expense_date || a.income_date)
+    );
 
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="5">
-            <div class="empty">
-              No ${currentType} found.
-            </div>
-          </td>
-        </tr>
-      `;
+    const recent = transactions.slice(0, 10);
 
-      return;
+    if (!recent.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    <div class="empty">
+                        No transactions yet.
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        return;
     }
 
-    tbody.innerHTML = data.map(item => {
+    tbody.innerHTML = recent.map(item => {
 
-      const date =
-        currentType === "expenses"
-          ? item.expense_date
-          : item.income_date;
+        const isIncome = item.type === "income";
 
-      return `
-        <tr>
+        return `
+            <tr>
+                <td>
+                    <span class="category">
+                        ${isIncome ? "Income" : "Expense"}
+                    </span>
+                </td>
 
-          <td>
-            <strong>
-              ${escapeHTML(item.title)}
-            </strong>
+                <td class="title-cell">
+                    ${escapeHTML(item.title)}
+                </td>
 
-            <div style="color:#71717a;font-size:12px;margin-top:3px">
-              ${escapeHTML(item.description || "")}
-            </div>
-          </td>
+                <td>
+                    <span class="category">
+                        ${escapeHTML(item.category)}
+                    </span>
+                </td>
 
-          <td>
-            <span class="badge">
-              ${escapeHTML(item.category)}
-            </span>
-          </td>
+                <td class="${isIncome ? "amount-income" : "amount-expense"}">
+                    ${isIncome ? "+" : "-"}${formatMoney(item.amount)}
+                </td>
 
-          <td>
-            ${formatDate(date)}
-          </td>
-
-          <td class="${
-            currentType === "income"
-              ? "income"
-              : "expense"
-          }">
-
-            ${
-              currentType === "income"
-                ? "+"
-                : "-"
-            }
-
-            ${money(item.amount)}
-
-          </td>
-
-          <td>
-
-            <div class="actions">
-
-              <button
-                onclick="editTransaction(${item.id})">
-                Edit
-              </button>
-
-              <button
-                class="delete"
-                onclick="deleteTransaction(${item.id})">
-                Delete
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
-      `;
+                <td>
+                    ${formatDate(
+                        item.income_date || item.expense_date
+                    )}
+                </td>
+            </tr>
+        `;
 
     }).join("");
-  }
+}
 
 
-  /*
-   ==================================================
-   SWITCH BETWEEN EXPENSE / INCOME
-   ==================================================
-  */
+/* ============================================================
+   EXPENSES
+============================================================ */
 
-  function showTransactions(type) {
+function renderExpenses() {
 
-    currentType = type;
+    const tbody = document.getElementById("expenseTable");
 
-    document
-      .getElementById("expensesTab")
-      .classList.toggle(
-        "active",
-        type === "expenses"
-      );
+    if (!expenses.length) {
 
-    document
-      .getElementById("incomeTab")
-      .classList.toggle(
-        "active",
-        type === "income"
-      );
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty">
+                        No expenses found.
+                    </div>
+                </td>
+            </tr>
+        `;
 
-    renderTable();
-  }
+        return;
+    }
+
+    tbody.innerHTML = expenses.map(item => `
+        <tr>
+
+            <td>#${item.id}</td>
+
+            <td class="title-cell">
+                ${escapeHTML(item.title)}
+            </td>
+
+            <td>
+                <span class="category">
+                    ${escapeHTML(item.category)}
+                </span>
+            </td>
+
+            <td>
+                <div class="description">
+                    ${escapeHTML(item.description || "—")}
+                </div>
+            </td>
+
+            <td class="amount-expense">
+                -${formatMoney(item.amount)}
+            </td>
+
+            <td>
+                ${formatDate(item.expense_date)}
+            </td>
+
+            <td>
+                <div class="actions">
+
+                    <button
+                        class="btn btn-light btn-small"
+                        onclick="editTransaction(${item.id}, 'expense')"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="deleteTransaction(${item.id}, 'expense')"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+            </td>
+
+        </tr>
+    `).join("");
+}
 
 
-  /*
-   ==================================================
-   MODAL
-   ==================================================
-  */
+/* ============================================================
+   INCOME
+============================================================ */
 
-  function openAddModal() {
+function renderIncome() {
+
+    const tbody = document.getElementById("incomeTable");
+
+    if (!incomes.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty">
+                        No income records found.
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    tbody.innerHTML = incomes.map(item => `
+        <tr>
+
+            <td>#${item.id}</td>
+
+            <td class="title-cell">
+                ${escapeHTML(item.title)}
+            </td>
+
+            <td>
+                <span class="category">
+                    ${escapeHTML(item.category)}
+                </span>
+            </td>
+
+            <td>
+                <div class="description">
+                    ${escapeHTML(item.description || "—")}
+                </div>
+            </td>
+
+            <td class="amount-income">
+                +${formatMoney(item.amount)}
+            </td>
+
+            <td>
+                ${formatDate(item.income_date)}
+            </td>
+
+            <td>
+                <div class="actions">
+
+                    <button
+                        class="btn btn-light btn-small"
+                        onclick="editTransaction(${item.id}, 'income')"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="deleteTransaction(${item.id}, 'income')"
+                    >
+                        Delete
+                    </button>
+
+                </div>
+            </td>
+
+        </tr>
+    `).join("");
+}
+
+
+/* ============================================================
+   ADD MODAL
+============================================================ */
+
+function openAddModal(type) {
+
+    editingId = null;
+    editingType = type;
 
     document.getElementById("transactionForm").reset();
 
     document.getElementById("editId").value = "";
-
-    document.getElementById("modalTitle").textContent =
-      currentType === "expenses"
-        ? "Add Expense"
-        : "Add Income";
-
-    setupCategories();
+    document.getElementById("transactionType").value = type;
 
     document.getElementById("date").value =
-      new Date().toISOString().split("T")[0];
+        new Date().toISOString().split("T")[0];
 
-    document
-      .getElementById("modal")
-      .classList.add("show");
-  }
+    document.getElementById("modalTitle").textContent =
+        type === "income" ? "Add Income" : "Add Expense";
+
+    document.getElementById("submitBtn").textContent =
+        type === "income" ? "Add Income" : "Add Expense";
+
+    populateCategories(type);
+
+    document.getElementById("modalOverlay")
+        .classList.add("show");
+}
 
 
-  function closeModal() {
+function closeModal() {
 
-    document
-      .getElementById("modal")
-      .classList.remove("show");
-  }
+    document.getElementById("modalOverlay")
+        .classList.remove("show");
+
+    editingId = null;
+    editingType = null;
+}
 
 
-  /*
-   ==================================================
+/* ============================================================
    CATEGORIES
-   ==================================================
-  */
+============================================================ */
 
-  function setupCategories() {
+function populateCategories(type, selected = "") {
 
-    const select =
-      document.getElementById("category");
+    const select = document.getElementById("category");
 
-    const categories =
-      currentType === "expenses"
-        ? [
+    let categories;
+
+    if (type === "income") {
+
+        categories = [
+            "salary",
+            "freelance",
+            "business",
+            "investment",
+            "bonus",
+            "gift",
+            "other"
+        ];
+
+    } else {
+
+        categories = [
             "food",
             "rent",
             "transport",
@@ -824,313 +1395,301 @@
             "health",
             "education",
             "entertainment",
+            "travel",
             "other"
-          ]
-        : [
-            "salary",
-            "freelance",
-            "business",
-            "investment",
-            "bonus",
-            "other"
-          ];
+        ];
+    }
 
-    select.innerHTML =
-      categories.map(category =>
-        `<option value="${category}">
-          ${capitalize(category)}
-        </option>`
-      ).join("");
-  }
+    select.innerHTML = categories.map(category => `
+        <option value="${category}"
+            ${category === selected ? "selected" : ""}>
+            ${capitalize(category)}
+        </option>
+    `).join("");
+}
 
 
-  /*
-   ==================================================
+/* ============================================================
    CREATE / UPDATE
-   ==================================================
-  */
+============================================================ */
 
-  document
-    .getElementById("transactionForm")
+document.getElementById("transactionForm")
     .addEventListener("submit", async function(event) {
 
-      event.preventDefault();
+    event.preventDefault();
 
-      const id =
+    const type =
+        document.getElementById("transactionType").value;
+
+    const id =
         document.getElementById("editId").value;
 
-      const title =
-        document.getElementById("title").value;
+    const payload = {
 
-      const amount =
-        parseFloat(
-          document.getElementById("amount").value
-        );
+        title: document.getElementById("title").value.trim(),
 
-      const category =
-        document.getElementById("category").value;
+        amount: Number(
+            document.getElementById("amount").value
+        ),
 
-      const date =
-        document.getElementById("date").value;
+        category:
+            document.getElementById("category").value,
 
-      const description =
-        document.getElementById("description").value;
+        description:
+            document.getElementById("description").value.trim(),
 
-
-      let data = {
-        title,
-        amount,
-        category,
-        description
-      };
-
-
-      if (currentType === "expenses") {
-
-        data.expense_date = date;
-
-      } else {
-
-        data.income_date = date;
-
-      }
-
-
-      try {
-
-        const endpoint =
-          currentType === "expenses"
-            ? "/expenses"
-            : "/income";
-
-
-        if (id) {
-
-          await request(
-            endpoint + "/" + id,
-            {
-              method: "PUT",
-              body: JSON.stringify(data)
+        ...(type === "income"
+            ? {
+                income_date:
+                    document.getElementById("date").value
             }
-          );
-
-        } else {
-
-          await request(
-            endpoint,
-            {
-              method: "POST",
-              body: JSON.stringify(data)
-            }
-          );
-
-        }
-
-
-        closeModal();
-
-        await loadData();
-
-      } catch (error) {
-
-        console.error(error);
-
-        showError(
-          "Could not save transaction: " +
-          error.message
-        );
-
-      }
-
-    });
-
-
-  /*
-   ==================================================
-   EDIT
-   ==================================================
-  */
-
-  function editTransaction(id) {
-
-    const list =
-      currentType === "expenses"
-        ? expenses
-        : incomes;
-
-    const item =
-      list.find(x => x.id === id);
-
-    if (!item) return;
-
-    setupCategories();
-
-    document.getElementById("editId").value =
-      item.id;
-
-    document.getElementById("title").value =
-      item.title;
-
-    document.getElementById("amount").value =
-      parseFloat(item.amount);
-
-    document.getElementById("category").value =
-      item.category;
-
-    document.getElementById("description").value =
-      item.description || "";
-
-    document.getElementById("date").value =
-      currentType === "expenses"
-        ? item.expense_date
-        : item.income_date;
-
-    document.getElementById("modalTitle").textContent =
-      currentType === "expenses"
-        ? "Edit Expense"
-        : "Edit Income";
-
-    document
-      .getElementById("modal")
-      .classList.add("show");
-  }
-
-
-  /*
-   ==================================================
-   DELETE
-   ==================================================
-  */
-
-  async function deleteTransaction(id) {
-
-    const confirmed =
-      confirm(
-        "Are you sure you want to delete this transaction?"
-      );
-
-    if (!confirmed) return;
+            : {
+                expense_date:
+                    document.getElementById("date").value
+            })
+    };
 
     try {
 
-      const endpoint =
-        currentType === "expenses"
-          ? "/expenses/"
-          : "/income/";
+        const endpoint =
+            type === "income"
+                ? "/income"
+                : "/expenses";
 
-      await request(
-        endpoint + id,
-        {
-          method: "DELETE"
+        if (id) {
+
+            await apiRequest(`${endpoint}/${id}`, {
+                method: "PUT",
+                body: JSON.stringify(payload)
+            });
+
+            showToast(
+                `${capitalize(type)} updated successfully`,
+                "success"
+            );
+
+        } else {
+
+            await apiRequest(endpoint, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
+            showToast(
+                `${capitalize(type)} added successfully`,
+                "success"
+            );
         }
-      );
 
-      await loadData();
+        closeModal();
+
+        await loadAll();
 
     } catch (error) {
 
-      console.error(error);
-
-      showError(
-        "Could not delete transaction: " +
-        error.message
-      );
-
+        showToast(error.message, "error");
     }
-  }
+});
 
 
-  /*
-   ==================================================
-   HELPERS
-   ==================================================
-  */
+/* ============================================================
+   EDIT
+============================================================ */
 
-  function money(value) {
+function editTransaction(id, type) {
 
-    return "Rs " +
-      parseFloat(value || 0)
-        .toLocaleString("en-IN", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+    const collection =
+        type === "income" ? incomes : expenses;
+
+    const item =
+        collection.find(x => Number(x.id) === Number(id));
+
+    if (!item) {
+
+        showToast("Transaction not found", "error");
+        return;
+    }
+
+    editingId = id;
+    editingType = type;
+
+    document.getElementById("editId").value = id;
+    document.getElementById("transactionType").value = type;
+
+    document.getElementById("title").value =
+        item.title || "";
+
+    document.getElementById("amount").value =
+        item.amount || "";
+
+    document.getElementById("description").value =
+        item.description || "";
+
+    const date =
+        type === "income"
+            ? item.income_date
+            : item.expense_date;
+
+    document.getElementById("date").value =
+        date || "";
+
+    populateCategories(
+        type,
+        item.category || ""
+    );
+
+    document.getElementById("modalTitle").textContent =
+        `Edit ${capitalize(type)}`;
+
+    document.getElementById("submitBtn").textContent =
+        "Save Changes";
+
+    document.getElementById("modalOverlay")
+        .classList.add("show");
+}
+
+
+/* ============================================================
+   DELETE
+============================================================ */
+
+async function deleteTransaction(id, type) {
+
+    const confirmed = confirm(
+        `Are you sure you want to delete this ${type}?`
+    );
+
+    if (!confirmed) return;
+
+    const endpoint =
+        type === "income"
+            ? `/income/${id}`
+            : `/expenses/${id}`;
+
+    try {
+
+        await apiRequest(endpoint, {
+            method: "DELETE"
         });
-  }
+
+        showToast(
+            `${capitalize(type)} deleted successfully`,
+            "success"
+        );
+
+        await loadAll();
+
+    } catch (error) {
+
+        showToast(error.message, "error");
+    }
+}
 
 
-  function formatDate(date) {
+/* ============================================================
+   HELPERS
+============================================================ */
 
-    if (!date) return "";
+function formatMoney(value) {
 
-    return new Date(date + "T00:00:00")
-      .toLocaleDateString("en-US", {
+    const number = Number(value || 0);
+
+    return "₹" + number.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+
+function formatDate(date) {
+
+    if (!date) return "—";
+
+    const parsed = new Date(date + "T00:00:00");
+
+    if (isNaN(parsed.getTime())) {
+        return date;
+    }
+
+    return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
         month: "short",
-        day: "numeric",
         year: "numeric"
-      });
-  }
+    });
+}
 
 
-  function capitalize(value) {
+function capitalize(value) {
+
+    if (!value) return "";
 
     return value.charAt(0).toUpperCase() +
-      value.slice(1);
-  }
+        value.slice(1);
+}
 
 
-  function escapeHTML(value) {
+function escapeHTML(value) {
 
     return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 
-  function showError(message) {
+/* ============================================================
+   TOAST
+============================================================ */
 
-    const box =
-      document.getElementById("errorBox");
+let toastTimer;
 
-    box.textContent = message;
-    box.style.display = "block";
-  }
+function showToast(message, type = "") {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.className =
+        `toast show ${type}`;
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 3000);
+}
 
 
-  function hideError() {
-
-    document.getElementById("errorBox")
-      .style.display = "none";
-  }
-
-
-  /*
-   ==================================================
+/* ============================================================
    CLOSE MODAL WHEN CLICKING OUTSIDE
-   ==================================================
-  */
+============================================================ */
 
-  document
-    .getElementById("modal")
+document.getElementById("modalOverlay")
     .addEventListener("click", function(event) {
 
-      if (event.target === this) {
-        closeModal();
-      }
+        if (event.target === this) {
+            closeModal();
+        }
 
     });
 
 
-  /*
-   ==================================================
-   START APPLICATION
-   ==================================================
-  */
+/* ============================================================
+   ESCAPE KEY
+============================================================ */
 
-  checkConnection();
-  loadData();
+document.addEventListener("keydown", function(event) {
 
+    if (event.key === "Escape") {
+        closeModal();
+    }
+
+});
 </script>
 
 </body>
