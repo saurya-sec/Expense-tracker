@@ -5,6 +5,17 @@ from schema.Income import IncomeCreate,IncomeResponse,IncomeUpdate
 from database import get_db
 
 app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://expense-tracker-git-main-saurya1.vercel.app/"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # -------------------------
 # Health Check
