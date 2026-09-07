@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://expense-tracker-saurya1.vercel.app/"
+        "https://expense-tracker-frontend-saurya1.vercel.app/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
