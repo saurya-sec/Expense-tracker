@@ -11,10 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://expense-tracker-frontend-saurya1.vercel.app/","https://expense-tracker-frontend-git-main-saurya1.vercel.app/","https://expense-tracker-frontend-e7mwn09o0-saurya1.vercel.app/"
+        "https://expense-tracker-frontend-saurya1.vercel.app","https://expense-tracker-frontend-git-main-saurya1.vercel.app","https://expense-tracker-frontend-e7mwn09o0-saurya1.vercel.app"
 
     ],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
