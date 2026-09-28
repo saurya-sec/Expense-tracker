@@ -7,7 +7,7 @@ from typing import Literal
 class ExpenseCreate(BaseModel):
     title: str
     amount: Decimal
-    category: Literal["food", "transport", "rent"]=Field(examples=["food","transport","rent"])
+    category: str
     description: str | None = None
     expense_date: date
 
@@ -15,7 +15,7 @@ class ExpenseResponse(BaseModel):
     id: int 
     title: str 
     amount: Decimal 
-    category: Literal["food", "transport", "rent"]=Field(examples=["food","transport","rent"])
+    category: str
     description: str | None = None 
     expense_date: date 
     created_at: datetime 
@@ -24,6 +24,6 @@ class ExpenseResponse(BaseModel):
 class ExpenseUpdate(BaseModel):
     title: str | None = None
     amount: Decimal | None = None
-    category: Literal["food", "transport", "rent"]=Field(examples=["food","transport","rent"])
+    category: str
     expense_date: date | None = None
     description: str | None = None

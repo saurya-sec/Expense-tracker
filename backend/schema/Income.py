@@ -6,7 +6,7 @@ from typing import Literal
 class IncomeCreate(BaseModel):
     title: str
     amount: Decimal
-    category: Literal["salary", "business", "freelance"] = Field(examples=["salary", "business", "freelance"])
+    category: str
     description: str | None = None
     income_date: date
 
@@ -14,7 +14,7 @@ class IncomeResponse(BaseModel):
     id: int
     title: str
     amount: Decimal
-    category: Literal["salary", "business", "freelance"] = Field(examples=["salary", "business", "freelance"])
+    category: str
     description: str | None = None
     income_date: date
     created_at: datetime
@@ -23,6 +23,6 @@ class IncomeResponse(BaseModel):
 class IncomeUpdate(BaseModel):
     title: str | None = None
     amount: Decimal | None = None
-    category: Literal["salary", "business", "freelance"] = Field(examples=["salary", "business", "freelance"])
+    category: str
     income_date: date | None = None 
     description: str | None = None

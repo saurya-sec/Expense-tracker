@@ -1,9 +1,8 @@
-from fastapi import FastAPI , Depends , HTTPException, status
+from fastapi import FastAPI , Depends
 from psycopg import Connection
-from schema.Expense import ExpenseCreate,ExpenseResponse ,ExpenseUpdate
-from schema.Income import IncomeCreate,IncomeResponse,IncomeUpdate
 from database import get_db
-from routes import income,expense
+from routes import income,expense,auth ,chatbot ,state ,statement
+
 app = FastAPI()
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,11 +19,13 @@ app.add_middleware(
 )
 
 
-
-
-
 app.include_router(income.router)
 app.include_router(expense.router)
+app.include_router(auth.router)
+app.include_router(chatbot.router)
+app.include_router(state.router)
+app.include_router(statement.router)
+
 
 # -------------------------
 # Health Check

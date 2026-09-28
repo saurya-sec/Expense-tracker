@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from psycopg import Connection
 from schema.Expense import ExpenseCreate,ExpenseResponse,ExpenseUpdate
 from database import get_db
-
+from auth import get_current_user
 
 router = APIRouter(
     prefix="/expenses",
@@ -21,6 +21,7 @@ router = APIRouter(
 def create_expense (
     expense : ExpenseCreate,
     db: Connection = Depends (get_db),
+    user_id: str = Depends(get_current_user),
 ):
     with db.cursor() as cursor :
         cursor.execute(
