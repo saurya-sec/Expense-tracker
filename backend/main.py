@@ -11,9 +11,16 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173","https://expense-tracker-saurya1.vercel.app","https://expense-tracker-git-main-saurya1.vercel.app/login","https://expense-tracker-qgxj33e1y-saurya1.vercel.app"
+        "http://127.0.0.1:5173",
 
+        # Production frontend
+        "https://expense-tracker-saurya1.vercel.app",
 
+        # Vercel Git deployment
+        "https://expense-tracker-git-main-saurya1.vercel.app",
+
+        # Other Vercel deployment
+        "https://expense-tracker-qgxj33e1y-saurya1.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
